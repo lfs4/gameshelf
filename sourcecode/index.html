@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Shit on my face :D</title>
+</head>
+
+<body>
+
+
+<div class="container">
+	<h1> GOTTA PLAY IT </h1>
+	<hr />
+	<div class = "page"></div>
+</div>
+
+<div id= "gameBox"></div>
+
+<script type="text/template" id="home_template">
+	<a href= "#/new">Game screen</a><br>
+	<a href= "#/favePage">Favorites screen</a><br>
+	<label>Welcome to the home screen</label>
+	<br>
+	<form class = "searchForm">
+	<label>Search for a game</label>
+	<br>
+	<input type="text/" name="searchBar">
+	<hr />
+	<button type="submit" class = "subButton"> Search For Game </button>
+	</form>
+</script>
+
+<script type="text/template" id="game_template">
+	<a href=''>Home </a>
+	<a href= "#/favePage">Favorites screen</a><br>
+	<br>
+	<label>Welcome to the game screen</label>
+</script>
+
+<script type="text/template" id="favorite_template">
+	<a href=''>Home</a>
+	<a href='#/new'>Games</a>
+	<br>
+	<label>This is the faovites page</label>
+</script>
+
+
+	<div id="home_container"></div>
+	<div id= "game_container"><div>
+
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js" type = "text/javascript"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js" type = "text/javascript"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min.js" type = "text/javascript"></script>
+	<script src="main.js" type="text/javascript"></script>
+</body>
+</html>
