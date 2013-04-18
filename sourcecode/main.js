@@ -7,7 +7,7 @@ var platforms = "";
 var gameId="";
 var gameDescription="";
 
-var key = "94c33e2ba7510ff43054cc919984757e843f2fca";
+var key = //[ API-key goes here	]
 $(document).ready(function(){
 
 	$("#searchButton").click(function(){
