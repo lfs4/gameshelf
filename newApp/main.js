@@ -6,6 +6,7 @@ var gameRating="";
 var platforms = "";
 var globalGameId="";
 var gameDescription="";
+var releaseDate="";
 
 var fList;
 
@@ -92,15 +93,17 @@ function newGame(data){
 	{
 		if(results.original_release_date !=null){
 			var dateString = results.original_release_date.substr(0, [10]);
-			dateString = dateString.substr(5,[2]) + "/" + dateString.substr(8,[2]) + "/" + dateString.substr(0,[4]);
-			$('#infoList').append("Released: "+ dateString);
+			dateString = "Released: " + dateString.substr(5,[2]) + "/" + dateString.substr(8,[2]) + "/" + dateString.substr(0,[4]);
+			$('#infoList').append(dateString);
 		}
 		else{
-			$('#infoList').append("Release Undetermined");
+			dateString = "Release Undetermined";
+			$('#infoList').append(dateString);
 		}
 	}
 	else{
-		$('#infoList').append("Release Undetermined");
+			dateString = "Expected Release Year: " + results.expected_release_year;
+			$('#infoList').append(dateString);
 	}
 	
 	for (i =0; i< results.platforms.length; i++)
@@ -108,16 +111,6 @@ function newGame(data){
 		
 
 		platforms += "<li>" + results.platforms[i].name + "</li>";
-		console.log(i);
-	
-		console.log("butts" + results.platforms.length);
-		
-		//if(i + 1 == results.platforms.length)
-			
-		
-			
-		
-		//platforms += results.platforms[i].name;
 	}
 	$('#platformList').append(platforms);
 		
@@ -131,6 +124,7 @@ function newGame(data){
 	gameTitle = results.name;
 	globalGameId = results.id;
 	gameBoxArt=results.image.small_url;
+	releaseDate = dateString;
 	//gameRating="4.5";
 	gameConsole = platforms;
 	gameDescription=results.deck;
@@ -271,6 +265,7 @@ $(function(){
         title: gameTitle,
         pic: gameBoxArt,
         console: gameConsole,
+	release: releaseDate,
         description: gameDescription,
         //rating: gameRating,
         id: globalGameId,
@@ -397,15 +392,25 @@ $(function(){
     link: function() {
 	//alert("working button " + this.model.get("title"));
 	//
+	
 	gameTitle = this.model.get("title");
+	gameRelease = this.model.get("release");
 	gameConsole = this.model.get("console");
 	gameBoxArt = this.model.get("pic");
 	gameDescription = this.model.get("description");
-
 	faveGameView.render();
+
+	$("#gameImage").append("<img class = \"img-rounded\" height = 200px src=" + gameBoxArt +  ">");
+	$('#infoList').append( gameTitle + "<br>");
+	$('#infoList').append(gameRelease);
+	console.log(gameRelease);
+	
+	$('#platformList').append(gameConsole);
 	
 	
-	//$("#faveGameBox").append( "<img height = 300px width = 200px  src = " + gameBoxArt + "><br>" + gameTitle + "<br>" + gameConsole +  "<br>" + gameDescription);
+	
+	
+	//$("#gameImage").append( "<img height = 300px width = 200px  src = " + gameBoxArt + "><br>" + gameTitle + "<br>" + gameConsole +  "<br>" + gameDescription);
     }
     
   });
