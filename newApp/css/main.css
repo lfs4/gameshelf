@@ -1,22 +1,68 @@
 .span4{
     margin-bottom: 10px;
 }
+p{
+    font-weight: bold;
+    font-size: medium;
+}
+
+.selectedImage{
+    width: 100%;
+}
+.headerwrap{
+    height: 20%;
+    width: 100%;
+    background-color: #424242;
+    margin: 0px;
+}
+h1{
+    margin-left: 5%;
+    color: #B40404;
+    
+}
+.gameImage{
+    width: 45%;
+    float: left;
+}
+.gameInfo{
+    margin-top: 10px;
+    width: 50%;
+   float: right; 
+}
+
 
 .img-rounded{
     border-style: groove;
     border-color: #971317;
 }
-
-@media (max-width: 767px){
-    
+@media (max-width: 480px){
     .btn {
         height: 50px;
         margin-top: 3px;
+        width: 50%;
+    }
+    #homeBtn{
+        height: 25px;
+        width: 50%;
+    }
+    .gameInfo{
         width: 100%;
+        float: none;
+    }
+    .gameImage{
+        width: 100%;
+        float: none;
+        margin-right: 0px;
     }
     #searchInput{
          width: 100%;
          height: 25px;
     }
     
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .selectedImage{
+        width: 50%;
+    }
 }
