@@ -10,13 +10,16 @@
 </head>
 
 <body>
-
-
-<div class="container">
-	<h1> GOTTA PLAY IT </h1>
-	<hr />
-	<div class = "page"></div>
+<div class="headerwrap">
+    
+    <div class= "container">
+	<h1>Gotta Play it<h1>
+    </div>
 </div>
+    <div class="container">
+	    <hr/ >
+	    <div class = "page"></div>
+    </div>
 
 
 
@@ -33,8 +36,22 @@
 	
 </script>
 <script type="text/template" id="favorite_template">
-	<a href='' class = "btn btn-primary">Home</a> <br>
-  <div id="faveGameBox" class="container">
+	<a href='' class = "btn">Home</a>
+	<br>
+	<br>
+	<br>
+	<br>
+    <div id="gameContainer" class= "container">
+		    <div id="selectedGame" class = "row">
+			<div id ="gameImage" class="gameImage"></div>
+			<div id="gameInfo" class="gameInfo">
+			    <p id="infoList"></p>
+			    <br>
+			    <p>Platforms</p>
+			    <ul id="platformList"></ul>
+			</div>
+		    </div>
+		  </div>
   
   </div>
 	
@@ -43,18 +60,20 @@
 
 <script type="text/template" id="game_template">
 
-		
-		
-	    
-		  <footer>
-		    <a id="clear-completed"></a>
-		    <div id="todo-count"></div>
-		  </footer>
-		  
-		<div id="selectedGame">
-		<a href='' class = "btn ">Home</a> <br>
+		<a href='' class = "btn">Home</a> <br>
 		  <br><button class = "btn btn-primary" id="favoriteButton" onclick="favPressed();">Favorite</button><br><br>
-		</div>
+		  <div id="gameContainer" class= "container">
+		    <div id="selectedGame" class = "row">
+			<div id ="gameImage" class="gameImage"></div>
+			<div id="gameInfo" class="gameInfo">
+			    <p id="infoList"></p>
+			    <br>
+			    <p>Platforms</p>
+			    <ul id="platformList"></ul>
+			</div>
+		    </div>
+		  </div>
+		
 </script>
 
 

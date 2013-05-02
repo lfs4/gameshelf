@@ -27,7 +27,7 @@ function displayResults(data){
 	var gameId;
 	
 	if(results.length == 0)
-		$('#grid').append("<div class=\"alert alert-error\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button><strong>I'M SORRY BUT IT APPEARS YOUR GAME IS IN A DIFFERENT SEARCH!!</strong></div>");
+		$('#grid').append("<div class=\"alert alert-error\"><strong>I'M SORRY, BUT YOUR GAME IS IN A DIFFERENT SEARCH!!</strong></div>");
 	
 	var rowCount = results.length/3;
 	var itemsPerRow = 3;
@@ -56,7 +56,7 @@ function displayResults(data){
 			}
 			gameId = results[i].id;
 			name = results[i].name;
-		$('#row' + rowIndex).append("<a href =#\/new  class=\"span4\" onClick = gameFunction(" + gameId +")<div><img class=\"img-rounded\" height = 300px width= 100% src=" + results[i].image.small_url + "></div><button class=btn>"+name+"</button></a>");			
+		$('#row' + rowIndex).append("<a href =#\/new  class=\"span4\" onClick = gameFunction(" + gameId +")<div class=\"btn\"><img class=\"img-rounded\" height = 300px width= 100% src=" + results[i].image.small_url + "></div>"+name+"</a>");			
 		//$('#row' + rowIndex).appent("<p>" + name + "</p>");
 			//	$('#grid').append( results[i].name  + "</div>");
 	
@@ -71,7 +71,7 @@ function gameFunction(gameId){
 	$.ajax({
 		url: "http://www.giantbomb.com/api/game/" + gameId,
 		type: "GET",
-		data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "genres" + "," + "image" + "," + "deck" + "," + "id",  resources: "game", format: "jsonp",json_callback: "newGame"},
+		data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "genres" + "," + "image" + "," + "images" + ","+ "deck" + "," + "id" + "," + "original_release_date" + "," + "expected_release_year",  resources: "game", format: "jsonp",json_callback: "newGame"},
 		dataType: "jsonp"
 			
 	});
@@ -82,18 +82,51 @@ function gameFunction(gameId){
 function newGame(data){
 	console.log(data);
 	var results = data.results;
+
 	var i;
+
 	
-	$('#selectedGame').append("<img height = 300 width = 200 src=" + results.image.small_url +  "><br>");
-	$('#selectedGame').append(results.name + results.id + "<br>");
-	
+	$('#gameImage').append("<img class = \"img-rounded\" height = 200px src=" + results.image.small_url +  ">");
+	$('#infoList').append( results.name +  "<br>");
+	if(results.expected_release_year == null)
+	{
+		if(results.original_release_date !=null){
+			var dateString = results.original_release_date.substr(0, [10]);
+			dateString = dateString.substr(5,[2]) + "/" + dateString.substr(8,[2]) + "/" + dateString.substr(0,[4]);
+			$('#infoList').append("Released: "+ dateString);
+		}
+		else{
+			$('#infoList').append("Release Undetermined");
+		}
+	}
+	else{
+		$('#infoList').append("Release Undetermined");
+	}
 	
 	for (i =0; i< results.platforms.length; i++)
 	{
-		platforms += results.platforms[i].name + "<br>";
-	}
+		
+
+		platforms += "<li>" + results.platforms[i].name + "</li>";
+		console.log(i);
 	
-	$('#selectedGame').append(platforms);	
+		console.log("butts" + results.platforms.length);
+		
+		//if(i + 1 == results.platforms.length)
+			
+		
+			
+		
+		//platforms += results.platforms[i].name;
+	}
+	$('#platformList').append(platforms);
+		
+	
+	
+
+	
+	//$('#selectedGame').append(platforms);
+	
 	
 	gameTitle = results.name;
 	globalGameId = results.id;
@@ -372,8 +405,7 @@ $(function(){
 	faveGameView.render();
 	
 	
-	//document.getElementById(favoriteButton).style.display='none';
-	$("#faveGameBox").append( "<img height = 300px width = 200px  src = " + gameBoxArt + "><br>" + gameTitle + "<br>" + gameConsole +  "<br>" + gameDescription);
+	//$("#faveGameBox").append( "<img height = 300px width = 200px  src = " + gameBoxArt + "><br>" + gameTitle + "<br>" + gameConsole +  "<br>" + gameDescription);
     }
     
   });
