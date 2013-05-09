@@ -15,8 +15,6 @@ var key = "94c33e2ba7510ff43054cc919984757e843f2fca";
 
 
 
-
-
 function displayResults(data){
 	console.log(data);
 	$("#grid").empty();
@@ -26,6 +24,10 @@ function displayResults(data){
 	//$('#gameBox').html(results[0].name + "<br>" + results[0].platforms[0].name);
 	var i;
 	var gameId;
+	
+	
+	
+	
 	
 	if(results.length == 0)
 		$('#grid').append("<div class=\"alert alert-error\"><strong>I'M SORRY, BUT YOUR GAME IS IN A DIFFERENT SEARCH!!</strong></div>");
@@ -44,6 +46,17 @@ function displayResults(data){
 	
 		for(i =0; i<results.length ; i++)
 		{
+			var newImage = "";
+	
+			if(results[i].image == null)
+			{
+				newImage == "img/not_available.jpg";
+				
+			}
+			else
+			{
+				newImage = results[i].image.small_url;
+			}
 			
 				console.log("i = " +  i);
 				console.log("old index "  + oldIndex);
@@ -57,7 +70,7 @@ function displayResults(data){
 			}
 			gameId = results[i].id;
 			name = results[i].name;
-		$('#row' + rowIndex).append("<a href =#\/new  class=\"span4\" onClick = gameFunction(" + gameId +")<div class=\"btn\"><img class=\"img-rounded\" height = 300px width= 100% src=" + results[i].image.small_url + "></div>"+name+"</a>");			
+		$('#row' + rowIndex).append("<a href =#\/new  class=\"span4\" onClick = gameFunction(" + gameId +")<div class=\"btn\"><img class=\"img-rounded\" height = 300px width= 100% src=" + newImage + "></div>"+name+"</a>");			
 		//$('#row' + rowIndex).appent("<p>" + name + "</p>");
 			//	$('#grid').append( results[i].name  + "</div>");
 	
@@ -82,7 +95,11 @@ function gameFunction(gameId){
 
 function newGame(data){
 	console.log(data);
+	$('.carousel').carousel({});
 	var results = data.results;
+	var carouselPic;
+	var carouselItems = "";
+	var active;
 
 	var i;
 
@@ -115,10 +132,24 @@ function newGame(data){
 	$('#platformList').append(platforms);
 		
 	
+	for(var k=0; k<results.images.length; k++)
+	{
+		if(k == 0)
+			active = "active item";
+		else
+			active = "item";
+		
+		
+		carouselItems += "<div class = \" " + active + "\">";
+		carouselItems += "<img class=\"img-rounded\"  src =" + results.images[k].medium_url + "></div>"
+		
+	}
 	
-
 	
-	//$('#selectedGame').append(platforms);
+	
+	$('.carousel-inner').append(carouselItems);
+	
+	
 	
 	
 	gameTitle = results.name;
@@ -163,6 +194,8 @@ function newGame(data){
 	}
 });*/
 
+
+
 HomeView = Backbone.View.extend({
 	el: '.page',
 	render: function(){
@@ -180,12 +213,11 @@ HomeView = Backbone.View.extend({
 		$.ajax({
 			url: "http://www.giantbomb.com/api/search/",
 			type: "GET",
-			data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "id" + "," + "image", format: "jsonp", resources: "game,id",json_callback: "displayResults"},
+			data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "id" + "," + "image", format: "jsonp", resources: "game,id",json_callback: "this.displayResults"},
 			dataType: "jsonp"
 			
 		});
-	}	
-
+	}
 });
 
 GameView = Backbone.View.extend({
@@ -214,46 +246,33 @@ FaveGameView = Backbone.View.extend({
 var homeView = new HomeView();
 var gameView = new GameView();
 var faveGameView = new FaveGameView();
-//var newGames = new Games();
+
 
 var Router = Backbone.Router.extend({
 	routes:{
 		'': 'home',
 		'new' : 'games', 
-		'fave': 'favorites'
+		'fave': 'favorites',
+		'shelf': 'myShelf'
 
 	}
 });
 
-//console.log(newGames);
 
 var router = new Router();
-router.on('route:home', function(){
-	homeView.render();
-});
-router.on('route:games', function(){
-	gameView.render();
-});
-router.on('route:favorites', function(){
-	faveGameView.render();
-});
 
 
-$(function(){
+//$(function(){
 
   
 
-  function show(shown, hidden) {
+  /*function show(shown, hidden) {
     document.getElementById(shown).style.display='block';
     document.getElementById(hidden).style.display='none';
     return false;
-  }
-  
-  // Todo Model
-  // ----------
+  }*/
 
-  // Our basic **Todo** model has `title`, `order`, and `done` attributes.
-  
+//game model that will be saved in local storage  
   var Game = Backbone.Model.extend({
   
     // Default attributes for the todo item.
@@ -269,12 +288,11 @@ $(function(){
         description: gameDescription,
         //rating: gameRating,
         id: globalGameId,
-        order: Faves.nextOrder(),
+        order: MyShelf.nextOrder(),
         done: false
       };
     },
 
-    // Toggle the `done` state of this todo item.
     toggle: function() {
       this.save({done: !this.get("done")});
     }
@@ -282,12 +300,8 @@ $(function(){
 
   });
 
-  // Todo Collection
-  // ---------------
-
-  // The collection of todos is backed by *localStorage* instead of a remote
-  // server.
-  var FavoritesList = Backbone.Collection.extend({
+	//collection of favorite games, also saved in local storage
+var Shelf = Backbone.Collection.extend({
 
     // Reference to this collection's model.
     model: Game,
@@ -317,17 +331,17 @@ $(function(){
 
   });
 
-  // Create our global collection of **Todos**.
-  var Faves = new FavoritesList;
+  // global collection of favorites
+  var MyShelf = new Shelf;
 
   // Todo Item View
   // --------------
 
-  // The DOM element for a todo item...
-  var FavoritesView = Backbone.View.extend({
+  // this is the view for each item in the favorites list
+  var ShelfItemView = Backbone.View.extend({
 
     //... is a list tag.
-    tagName:  "li",
+    tagName:  "div",
 
     // Cache the template function for a single item.
     template: _.template($('#item-template').html()),
@@ -391,26 +405,25 @@ $(function(){
     
     link: function() {
 	//alert("working button " + this.model.get("title"));
-	//
-	
+	$("#favoriteImage").empty();
+	$("#favoriteInfoList").empty();
+	$("#favoritePlatformList").empty();
 	gameTitle = this.model.get("title");
 	gameRelease = this.model.get("release");
 	gameConsole = this.model.get("console");
 	gameBoxArt = this.model.get("pic");
 	gameDescription = this.model.get("description");
-	faveGameView.render();
 
-	$("#gameImage").append("<img class = \"img-rounded\" height = 200px src=" + gameBoxArt +  ">");
-	$('#infoList').append( gameTitle + "<br>");
-	$('#infoList').append(gameRelease);
-	console.log(gameRelease);
+	$("#favoriteImage").append("<img id=\"fImage\" src=" + gameBoxArt +  ">");
+	$('#favoriteInfoList').append( gameTitle + "<br>");
+	$('#favoriteInfoList').append(gameRelease);
 	
-	$('#platformList').append(gameConsole);
-	
+	$('#favoritePlatformList').append(gameConsole);
 	
 	
 	
-	//$("#gameImage").append( "<img height = 300px width = 200px  src = " + gameBoxArt + "><br>" + gameTitle + "<br>" + gameConsole +  "<br>" + gameDescription);
+	
+
     }
     
   });
@@ -419,14 +432,14 @@ $(function(){
   // ---------------
 
   // Our overall **AppView** is the top-level piece of UI.
-  var Favorites = Backbone.View.extend({
+ShelfView = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: $("#favoritesBox"),
+    el: $(".page"),
 
     // Our template for the line of statistics at the bottom of the app.
-    statsTemplate: _.template($('#stats-template').html()),
+   // shelfTemplate: _.template($('#shelfTemplate').html()),
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
@@ -441,17 +454,22 @@ $(function(){
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
       
-      this.input = this.$("#new-todo");
-      this.allCheckbox = this.$("#toggle-all")[0];
 
-      this.listenTo(Faves, 'add', this.addOne);
-      this.listenTo(Faves, 'reset', this.addAll);
-      this.listenTo(Faves, 'all', this.render);
 
-      this.footer = this.$('footer');
-      this.main = $('#main');
+    //  this.footer = this.$('footer');
+      //this.main = $('#main');
 
-      Faves.fetch();
+      
+
+    },
+    showShelf: function(){
+	//alert("shelf display");
+	//this.input = this.$("#new-todo");
+      //this.allCheckbox = this.$("#toggle-all")[0];
+	this.listenTo(MyShelf, 'add', this.addOne);
+	this.listenTo(MyShelf, 'reset', this.addAll);
+	//this.listenTo(MyShelf, 'all', this.render);
+	MyShelf.fetch();
 
     },
 
@@ -459,58 +477,84 @@ $(function(){
     // of the app doesn't change.
     render: function() {
       
-      var done = Faves.done().length;
-      var remaining = Faves.remaining().length;
-	this.main.show();
-	this.footer.show();
-	this.footer.html(this.statsTemplate({done: done, remaining: remaining}));
-      this.allCheckbox.checked = !remaining;
+      var template = _.template($("#shelfTemplate").html(),{});
+      this.$el.html(template);
+      console.log("Shelf View Rendered");
+      
+      this.showShelf();
+      //var done = MyShelf.done().length;
+      //var remaining = MyShelf.remaining().length;
+	//this.main.show();
+	//this.footer.show();
+	//this.footer.html(this.shelfTemplate({done: done, remaining: remaining}));
+      //this.allCheckbox.checked = !remaining;
     },
 
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
     addOne: function(todo) {
-      var view = new FavoritesView({model: todo});
-      this.$("#todo-list").append(view.render().el);
+      var view = new ShelfItemView({model: todo});
+      this.$("#list").append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-      Faves.each(this.addOne, this);
+	this.$("#list").empty();
+      MyShelf.each(this.addOne, this);
     },
+   /* displayList: function(){
+	alert("butts");
+	this.$("#list").append(view.render().el);
+    },*/
 
     // If you hit return in the main input field, create new **Todo** model,
     // persisting it to *localStorage*.
     createOnEnter: function() {
-      Faves.each(function(todo){
+      MyShelf.each(function(todo){
           //alert(Faves.get("title"));
       }),
 	
-        Faves.create({pic: gameBoxArt, title: gameTitle/*, console: gameConsole, description: gameDescription, rating: gameRating, id: gameId*/});
+        MyShelf.create({pic: gameBoxArt, title: gameTitle/*, console: gameConsole, description: gameDescription, rating: gameRating, id: gameId*/});
 	//console.log(gameTitle + " " + globalGameId);
 	
     },
 
     // Clear all done todo items, destroying their models.
     clearCompleted: function() {
-      _.invoke(Faves.done(), 'destroy');
+      _.invoke(MyShelf.done(), 'destroy');
       return false;
     },
 
     toggleAllComplete: function () {
-      var done = this.allCheckbox.checked;
-      Faves.each(function (todo) { todo.save({'done': done}); });
+      //var done = this.allCheckbox.checked;
+      MyShelf.each(function (todo) { todo.save({'done': done}); });
     }
 
   });
   // Finally, we kick things off by creating the **App**.
-  var Favorite = new Favorites;
-  fList = Favorite;
-});
 
+//});
+	var shelfView = new ShelfView();
+	fList = shelfView;
 function favPressed(){
 	fList.createOnEnter();
 };
 
+router.on('route:home', function(){
+	homeView.render();
+});
+router.on('route:games', function(){
+	gameView.render();
+});
+router.on('route:favorites', function(){
+	//myShelfView.render();
+	//shelfView.render();
+	//myShelfView.showShelf();
+	//alert("shelf view");
 
+});
+router.on('route:myShelf', function(){
+	shelfView.render();
+	//shelfView.showShelf();
+});
 Backbone.history.start();

@@ -6,8 +6,42 @@ p{
     font-size: medium;
 }
 
+.span2{
+    
+        padding: 3%;
+        margin: 0;
+        
+}
+
 .selectedImage{
     width: 100%;
+}
+
+.toggle{
+    margin: 10px; 
+    display: block;
+
+}
+#searchInput{
+    margin-top: 2%;
+}
+#shelfViewer{
+    float: right;
+    width: 40%;
+}
+#fImage{
+    height: 50%;
+    width: 60%;
+}
+#favoritesBox{
+    float: left;
+    width: 50%;
+}
+.favoriteInfo{
+    float: left;
+}
+.container{
+    padding-top: 3%;;
 }
 .headerwrap{
     height: 20%;
@@ -15,14 +49,24 @@ p{
     background-color: #424242;
     margin: 0px;
 }
+
+#selectedFavorite{
+    width: 100%;
+}
 h1{
     margin-left: 5%;
     color: #B40404;
     
 }
+.btn{
+    margin-bottom: 2%;
+}
 .gameImage{
     width: 45%;
     float: left;
+}
+.search-query{
+    margin-top: .8%;
 }
 .gameInfo{
     margin-top: 10px;
@@ -30,13 +74,20 @@ h1{
    float: right; 
 }
 
-
+.img-polaroid{
+    height: 30%;
+    width: 110%;
+}
 .img-rounded{
     border-style: groove;
     border-color: #971317;
 }
+.faveDiv{
+        height: 200px;
+        width: 200px;
+}
 @media (max-width: 480px){
-    .btn {
+    /*.btn {
         height: 50px;
         margin-top: 3px;
         width: 50%;
@@ -44,6 +95,17 @@ h1{
     #homeBtn{
         height: 25px;
         width: 50%;
+    }*/
+    #shelfViewer{
+        float: none;
+        width: 95%;
+    }
+    #favoritesBox{
+        float: none;
+        width: 95%;
+    }
+    .span2{
+        width: 95%;
     }
     .gameInfo{
         width: 100%;
@@ -54,10 +116,17 @@ h1{
         float: none;
         margin-right: 0px;
     }
-    #searchInput{
+    .img-polaroid{
+         height: 50%;
+    }
+   #fImage{
+        height: 60%;
+        width: 100%;
+    }
+   /* #searchInput{
          width: 100%;
          height: 25px;
-    }
+    }*/
     
 }
 
@@ -65,4 +134,12 @@ h1{
     .selectedImage{
         width: 50%;
     }
+    .span2{
+        height: 300%;
+    }
+
+    #shelfViewer{
+        float: right;
+    }
+    .
 }

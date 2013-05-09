@@ -10,124 +10,135 @@
 </head>
 
 <body>
-<div class="headerwrap">
-    
-    <div class= "container">
-	<h1>Gotta Play it<h1>
+
+    <div class = "navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+	    <div class="container-fluid">
+		<!--<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		
+		</button>-->
+		<a class = "brand" href=''>GameShelf</a>
+		<ul class="nav">
+		    <li><a href="#home">Home</a></li>
+		    <li><a href="#shelf">MyShelf</a></li>
+		</ul>
+	    </div>
+	</div>
+	
     </div>
-</div>
     <div class="container">
-	    <hr/ >
-	    <div class = "page"></div>
+	    <div class = "page">
+	    </div>
     </div>
-
-
 
 <script type="text/template" id="home_template">
 	<input type="text" id="searchInput" name="game" placeholder = "Enter a game title" id="game">
 	<br>
 	
-	<button id="searchButton" class="btn btn-primary">Search</button>
-	<hr/>
+	<a href="#search" id="searchButton" class="btn btn-inverse">Search</a>
   <div id="grid" class="container">
   
   </div>
-	
+
 	
 </script>
 <script type="text/template" id="favorite_template">
-	<a href='' class = "btn">Home</a>
-	<br>
-	<br>
-	<br>
-	<br>
-	  <div id="gameContainer" class= "container">
-	    <div id="selectedGame" class = "row">
-		<div id ="gameImage" class="gameImage"></div>
-		<div id="gameInfo" class="gameInfo">
-		    <p id="infoList"></p>
-		    <br>
-		    <p>Platforms</p>
-		    <ul id="platformList"></ul>
-		</div>
-	    </div>
-	  </div>
-	
-  </div>
+
+
+  
+
 	
 	
 </script>
 
+<script type="text/template" id="shelfTemplate">
+    
+    <div id="shelfViewer" class="container">
+    
+		    <div id ="favoriteImage" class="favoriteImage"></div>
+		    <div id="favoriteInfo" class="favoriteInfo">
+			<p id="favoriteInfoList"></p>
+			<ul id="favoritePlatformList"></ul>
+		    </div>
+		</div>
+	      
+      <div id="favoritesBox" class="container">
+	 <div id="list"></div>
+    </div>
+
+</script>
 <script type="text/template" id="game_template">
 
-		<a href='' class = "btn">Home</a> <br>
-		  <br><button class = "btn btn-primary" id="favoriteButton" onclick="favPressed();">Favorite</button><br><br>
-		  <div id="gameContainer" class= "container">
-		    <div id="selectedGame" class = "row">
-			<div id ="gameImage" class="gameImage"></div>
-			<div id="gameInfo" class="gameInfo">
-			    <p id="infoList"></p>
-			    <br>
-			    <p>Platforms</p>
-			    <ul id="platformList"></ul>
-			</div>
+
+
+      <div id="gameContainer" class= "container">
+            <button class = "btn btn-inverse" id="favoriteButton" onclick="favPressed();">Favorite</button>
+	<div id="selectedGame" class = "row">
+	    <div id ="gameImage" class="gameImage"></div>
+	    <div id="gameInfo" class="gameInfo">
+		<p id="infoList"></p>
+		<br>
+		<p>Platforms</p>
+		<ul id="platformList"></ul>
+	    </div>
+	</div>
+	
+	<div id ="picCarousel" class = "carousel slide">
+		    <div class = "carousel-inner">
 		    </div>
+		    <a class = "carousel-control left" href="#picCarousel" data-slide="prev">&lsaquo;</a>
+		    <a class = "carousel-control right" href="#picCarousel" data-slide="next">&rsaquo;</a>
 		  </div>
+    
+      </div>
+      
+      
+
+		  
 		
 </script>
 
 
-<div id="favoritesBox" class="container">
-        
 
-        <section id="main">
+
+
+
+
+
+       <!-- <section id="main"> -->
+
           
-          <div id = "favBtn" style="display: none">
-          <button id ="favoriteButton">Favorite</button></br>
-	    </div>
+         <!-- <div id = "favList1"> -->
           
-          <div id = "favList1">
           
-            </br>Favorites:</br>
-            
-            <input id="toggle-all" type="checkbox">
-         <label for="toggle-all">Unfavorite all</label>
-            <div id="todo-list"></div>
-          </div>
-        </section>
+           <!-- <input id="toggle-all" type="checkbox"> -->
+        <!-- <label for="toggle-all">Unfavorite all</label> -->
+           
+          <!--</div>
+	    </section> -->
       
-     <footer>
-        <div id = "favList2">
+     <!--<footer>
+      <div id = "favList2">
           <a id="clear-completed">Clear completed</a>
           <div id="todo-count"></div>
         </div>
      </footer>
-    </div>
-
-</div>
+    </div>-->
 
   <script type="text/template" id="item-template">
-    
-    
-    
+    <div id="#favoriteRow" class="span2">
+   
     <div class="view">
-      <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %>>
-      
-      <img src=<%- pic %> height = 22px width = 22px> 
-      
-      <label><%- title %></label>
-      
-      <button id="fLink">Select Game</button>
 
+       <a id="fLink">
+      <img class="img-polaroid" src=<%- pic %>>
+      </a>
+      <input id="clear-completed"   value="Delete" class="btn btn-danger, toggle" type="button" <%= done ? 'checked="checked"' : '' %>>
+	 </div>
+      
     </div>
   </script>
 
-  <script type="text/template" id="stats-template">
-    <% if (done) { %>
-      <a id="clear-completed">Unfavorite <%= done %> <%= done == 1 ? 'game' : 'games' %></a>
-    <% } %>
-    <div class="todo-count">There are <b><%= remaining %></b> <%= remaining == 1 ? 'game' : 'games' %> on your favorite list</div>
-  </script>
 
 
 
@@ -135,9 +146,10 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js" type = "text/javascript"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min.js" type = "text/javascript"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.0/backbone.localStorage-min.js" type="text/javascript" ></script>
+  <script src="js/bootstrap.min.js" type="text/javascript"></script>
         
     
-        <script src="main.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
 
         
         
