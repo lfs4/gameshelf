@@ -7,12 +7,65 @@ var platforms = "";
 var globalGameId="";
 var gameDescription="";
 var releaseDate="";
+var publishers="";
+var videos 
+var scrollable="";
+var carousel="";
+var carouselNav = "<a class = \"carousel-control left\" href=\"#favePicCarousel\" data-slide=\"prev\">&lsaquo;</a>" + 
+		    "<a class = \"carousel-control right\" href=\"#favePicCarousel\" data-slide=\"next\">&rsaquo;</a>";
+		    
+var carouselNav1 = "<a class = \"carousel-control left\" href=\"#picCarousel\" data-slide=\"prev\">&lsaquo;</a>" + 
+		    "<a class = \"carousel-control right\" href=\"#picCarousel\" data-slide=\"next\">&rsaquo;</a>";
+		
+
 
 var fList;
 
 var key = "94c33e2ba7510ff43054cc919984757e843f2fca";
 
 
+$("#searchBar").bind('keypress', function(e){
+	if(e.which ===13){
+		name = $("#searchBar").val();
+	
+		$.ajax({
+			url: "http://www.giantbomb.com/api/search/",
+			type: "GET",
+			data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "id" + "," + "image", format: "jsonp", resources: "game,id",json_callback: "this.displayResults"},
+			dataType: "jsonp"
+			
+		});
+	}
+	
+})
+
+
+$('#searchButton').click(function(){
+	name = $("#searchBar").val();
+	
+	$.ajax({
+		url: "http://www.giantbomb.com/api/search/",
+		type: "GET",
+		data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "id" + "," + "image", format: "jsonp", resources: "game,id",json_callback: "this.displayResults"},
+		dataType: "jsonp"
+		
+	});
+});
+
+/*$('#searchBar').keypress(function(event){
+	name = $("#searchBar").val();
+	if(event.keycode == 13){
+		alert("as;ldkjflaksdjhf");
+		$.ajax({
+		url: "http://www.giantbomb.com/api/search/",
+		type: "GET",
+		data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "id" + "," + "image", format: "jsonp", resources: "game,id",json_callback: "this.displayResults"},
+		dataType: "jsonp"
+		
+	});
+	}
+	
+});*/
 
 
 function displayResults(data){
@@ -24,7 +77,6 @@ function displayResults(data){
 	//$('#gameBox').html(results[0].name + "<br>" + results[0].platforms[0].name);
 	var i;
 	var gameId;
-	
 	
 	
 	
@@ -50,7 +102,7 @@ function displayResults(data){
 	
 			if(results[i].image == null)
 			{
-				newImage == "img/not_available.jpg";
+				newImage = "img/not_available.jpg";
 				
 			}
 			else
@@ -69,8 +121,8 @@ function displayResults(data){
 				oldIndex = i;
 			}
 			gameId = results[i].id;
-			name = results[i].name;
-		$('#row' + rowIndex).append("<a href =#\/new  class=\"span4\" onClick = gameFunction(" + gameId +")<div class=\"btn\"><img class=\"img-rounded\" height = 300px width= 100% src=" + newImage + "></div>"+name+"</a>");			
+			name ="<div id=\"gameName\" class=\"btn btn-inverse\">" +  results[i].name + "</div>";
+		$('#row' + rowIndex).append("<a href =#\/new  class=\"span4\" onClick = gameFunction(" + gameId +")<div class=\"btn\"><img id=\"searchedImage\" class=\"img-rounded\" src=" + newImage + "></div>"+name+"</a>");			
 		//$('#row' + rowIndex).appent("<p>" + name + "</p>");
 			//	$('#grid').append( results[i].name  + "</div>");
 	
@@ -85,7 +137,9 @@ function gameFunction(gameId){
 	$.ajax({
 		url: "http://www.giantbomb.com/api/game/" + gameId,
 		type: "GET",
-		data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "genres" + "," + "image" + "," + "images" + ","+ "deck" + "," + "id" + "," + "original_release_date" + "," + "expected_release_year",  resources: "game", format: "jsonp",json_callback: "newGame"},
+		data: {api_key: key, query: name, field_list: "name" + "," + "platforms" + "," + "genres" + "," + "image" + ","
+		+ "images" + ","+ "deck" + "," + "id" + "," + "original_release_date" + "," + "videos" + "," + "publishers" 
+		+ "," + "expected_release_year",  resources: "game", format: "jsonp",json_callback: "newGame"},
 		dataType: "jsonp"
 			
 	});
@@ -100,37 +154,49 @@ function newGame(data){
 	var carouselPic;
 	var carouselItems = "";
 	var active;
+	
+	var image;
+	
+	if(results.image == null)
+		image = "img/not_available.jpg";
+	else
+		image = results.image.small_url;
+
+	
 
 	var i;
 
-	
-	$('#gameImage').append("<img class = \"img-rounded\" height = 200px src=" + results.image.small_url +  ">");
-	$('#infoList').append( results.name +  "<br>");
+	$('#infoList').append("<button class = \"btn btn-inverse\" id=\"favoriteButton\" >Favorite</button>");
+	$('#gameImage').append("<img class = \"img-rounded\" id=\"selectedImage\"  src=" + image +  ">");
+	$('#infoList').append("<p>" + results.name +  "</p>");
 	if(results.expected_release_year == null)
 	{
 		if(results.original_release_date !=null){
 			var dateString = results.original_release_date.substr(0, [10]);
 			dateString = "Released: " + dateString.substr(5,[2]) + "/" + dateString.substr(8,[2]) + "/" + dateString.substr(0,[4]);
-			$('#infoList').append(dateString);
+			$('#infoList').append("<p>" + dateString + "</p>");
 		}
 		else{
 			dateString = "Release Undetermined";
-			$('#infoList').append(dateString);
+			$('#infoList').append("<p>" + dateString + "</p>");
 		}
 	}
 	else{
 			dateString = "Expected Release Year: " + results.expected_release_year;
-			$('#infoList').append(dateString);
+			$('#infoList').append("<p>" + dateString + "</p>");
 	}
-	
+	$('#infoList').append("<p>" + results.deck + "</p>");
 	for (i =0; i< results.platforms.length; i++)
 	{
 		
 
 		platforms += "<li>" + results.platforms[i].name + "</li>";
 	}
+	$('#infoList').append("<p>Platforms: </p>");
 	$('#platformList').append(platforms);
 		
+	
+	
 	
 	for(var k=0; k<results.images.length; k++)
 	{
@@ -138,28 +204,36 @@ function newGame(data){
 			active = "active item";
 		else
 			active = "item";
+
 		
-		
-		carouselItems += "<div class = \" " + active + "\">";
-		carouselItems += "<img class=\"img-rounded\"  src =" + results.images[k].medium_url + "></div>"
+		carouselItems += "<div  class = \" " + active + "\">";
+		carouselItems += "<img id=\"carouselItem\" src =" + results.images[k].medium_url + "></div>";
 		
 	}
-	
+
 	
 	
 	$('.carousel-inner').append(carouselItems);
 	
-	
+	if(results.images.length > 1){
+		$('#picCarousel').append(carouselNav1);
+		scrollable = true;
+	}
+	else if (results.images.length <= 1)
+		scrollable = false;
+
 	
 	
 	gameTitle = results.name;
+	carousel = carouselItems;
 	globalGameId = results.id;
-	gameBoxArt=results.image.small_url;
+	gameBoxArt=image;
 	releaseDate = dateString;
 	//gameRating="4.5";
 	gameConsole = platforms;
 	gameDescription=results.deck;
 	platforms ="";
+	
 
 
 	//alert("this is a title" + ' ' + "LWH.jpg" + ' ' + "4.5" + ' ' + "PC, N64"  + ' ' + "216" + ' ' + "Good Game");
@@ -201,9 +275,9 @@ HomeView = Backbone.View.extend({
 	render: function(){
 		var template = _.template($("#home_template").html(),{});
 		this.$el.html(template);
-		console.log("HomeView Rendered");
-	},
-	events: {
+		//console.log("HomeView Rendered");
+	}
+	/*events: {
 		"click #searchButton": "searchGame"
 	},
 	searchGame: function(event){
@@ -217,7 +291,7 @@ HomeView = Backbone.View.extend({
 			dataType: "jsonp"
 			
 		});
-	}
+	}*/
 });
 
 GameView = Backbone.View.extend({
@@ -243,23 +317,50 @@ FaveGameView = Backbone.View.extend({
 	}
 });
 
+SearchView = Backbone.View.extend({
+	el: '.page',
+	render: function(){
+		var template =_.template($("#search_template").html(),{});
+		this.$el.html(template);
+		console.log("searchViewRendered");
+	}
+});
+
 var homeView = new HomeView();
 var gameView = new GameView();
-var faveGameView = new FaveGameView();
+//var faveGameView = new FaveGameView();
+var searchView = new SearchView();
 
 
 var Router = Backbone.Router.extend({
 	routes:{
 		'': 'home',
 		'new' : 'games', 
-		'fave': 'favorites',
 		'shelf': 'myShelf'
+		,'search': 'searchview'
 
 	}
 });
 
-
 var router = new Router();
+
+router.on('route:home', function(){
+	homeView.render();
+});
+router.on('route:games', function(){
+	gameView.render();
+});
+router.on('route:searchview', function(){
+	searchView.render();
+
+});
+router.on('route:myShelf', function(){
+	shelfView.render();
+	//shelfView.showShelf();
+});
+
+
+
 
 
 //$(function(){
@@ -288,6 +389,8 @@ var router = new Router();
         description: gameDescription,
         //rating: gameRating,
         id: globalGameId,
+	screenShots: carousel,
+	nav: scrollable,
         order: MyShelf.nextOrder(),
         done: false
       };
@@ -307,14 +410,12 @@ var Shelf = Backbone.Collection.extend({
     model: Game,
 
     // Save all of the todo items under the `"todos-backbone"` namespace.
-    localStorage: new Backbone.LocalStorage("todos-backbone"),
-
-    // Filter down the list of all todo items that are finished.
+    localStorage: new Backbone.LocalStorage("gameshelf"),
+    
     done: function() {
       return this.where({done: true});
     },
 
-    // Filter down the list to only todo items that are still not finished.
     remaining: function() {
       return this.without.apply(this, this.done());
     },
@@ -326,7 +427,7 @@ var Shelf = Backbone.Collection.extend({
       return this.last().get('order') + 1;
     },
 
-    // Todos are sorted by their original insertion order.
+
     comparator: 'order'
 
   });
@@ -334,7 +435,7 @@ var Shelf = Backbone.Collection.extend({
   // global collection of favorites
   var MyShelf = new Shelf;
 
-  // Todo Item View
+
   // --------------
 
   // this is the view for each item in the favorites list
@@ -352,9 +453,7 @@ var Shelf = Backbone.Collection.extend({
       "click #fLink"   : "link",
     },
 
-    // The TodoView listens for changes to its model, re-rendering. Since there's
-    // a one-to-one correspondence between a **Todo** and a **TodoView** in this
-    // app, we set a direct reference on the model for convenience.
+
     initialize: function() {  
       this.listenTo(this.model, 'destroy', this.remove);
     },
@@ -382,7 +481,7 @@ var Shelf = Backbone.Collection.extend({
       this.input.focus();
     },
 
-    // Close the `"editing"` mode, saving changes to the todo.
+
     close: function() {
       var value = this.input.val();
       if (!value) {
@@ -405,22 +504,42 @@ var Shelf = Backbone.Collection.extend({
     
     link: function() {
 	//alert("working button " + this.model.get("title"));
+	//if($(window).width() < 960)
+		$('html, body').animate({ scrollTop: 0 }, 'slow');
+
+		
+		
+		
+		
+	
+
 	$("#favoriteImage").empty();
 	$("#favoriteInfoList").empty();
 	$("#favoritePlatformList").empty();
+	//$('.carousel-inner').empty();
+	$("#favePicCarousel").html("<div class = \"carousel-inner\"></div>");
 	gameTitle = this.model.get("title");
 	gameRelease = this.model.get("release");
 	gameConsole = this.model.get("console");
 	gameBoxArt = this.model.get("pic");
 	gameDescription = this.model.get("description");
+	screens = this.model.get("screenShots");
+	var carouselNavcheck = this.model.get("nav");
 
 	$("#favoriteImage").append("<img id=\"fImage\" src=" + gameBoxArt +  ">");
-	$('#favoriteInfoList').append( gameTitle + "<br>");
-	$('#favoriteInfoList').append(gameRelease);
-	
+	$('#favoriteInfoList').append( gameTitle);
+	$('#favoriteInfoList').append("<p>"+ gameRelease + "</p>");
+	$('#favoriteInfoList').append("<p>" + gameDescription + "</p>");
+	$('#favoriteInfoList').append("<p>Platforms: </p>");
 	$('#favoritePlatformList').append(gameConsole);
 	
+	$('.carousel-inner').append(screens);
 	
+	if(carouselNavcheck == true){
+		//alert("my life sucks");
+		$('#favePicCarousel').append(carouselNav);
+	}
+
 	
 	
 
@@ -428,15 +547,14 @@ var Shelf = Backbone.Collection.extend({
     
   });
 
-  // The Application
-  // ---------------
 
-  // Our overall **AppView** is the top-level piece of UI.
 ShelfView = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
     el: $(".page"),
+    
+    
 
     // Our template for the line of statistics at the bottom of the app.
    // shelfTemplate: _.template($('#shelfTemplate').html()),
@@ -449,9 +567,6 @@ ShelfView = Backbone.View.extend({
       
     },
 
-    // At initialization we bind to the relevant events on the `Todos`
-    // collection, when items are added or changed. Kick things off by
-    // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
       
 
@@ -490,33 +605,27 @@ ShelfView = Backbone.View.extend({
       //this.allCheckbox.checked = !remaining;
     },
 
-    // Add a single todo item to the list by creating a view for it, and
-    // appending its element to the `<ul>`.
     addOne: function(todo) {
       var view = new ShelfItemView({model: todo});
       this.$("#list").append(view.render().el);
     },
 
-    // Add all items in the **Todos** collection at once.
+
     addAll: function() {
 	this.$("#list").empty();
       MyShelf.each(this.addOne, this);
     },
-   /* displayList: function(){
-	alert("butts");
-	this.$("#list").append(view.render().el);
-    },*/
 
-    // If you hit return in the main input field, create new **Todo** model,
-    // persisting it to *localStorage*.
     createOnEnter: function() {
-      MyShelf.each(function(todo){
-          //alert(Faves.get("title"));
-      }),
-	
-        MyShelf.create({pic: gameBoxArt, title: gameTitle/*, console: gameConsole, description: gameDescription, rating: gameRating, id: gameId*/});
-	//console.log(gameTitle + " " + globalGameId);
-	
+	if(gameTitle != ""){
+	MyShelf.each(function(todo){
+	    //alert(Faves.get("title"));
+	}),
+	  MyShelf.create({pic: gameBoxArt, title: gameTitle/*, console: gameConsole, description: gameDescription, rating: gameRating, id: gameId*/});
+	  //console.log(gameTitle + " " + globalGameId);
+	}
+	else if(gameTitle == "")
+		alert("There is no game present");
     },
 
     // Clear all done todo items, destroying their models.
@@ -531,30 +640,12 @@ ShelfView = Backbone.View.extend({
     }
 
   });
-  // Finally, we kick things off by creating the **App**.
+
 
 //});
 	var shelfView = new ShelfView();
 	fList = shelfView;
-function favPressed(){
-	fList.createOnEnter();
-};
 
-router.on('route:home', function(){
-	homeView.render();
-});
-router.on('route:games', function(){
-	gameView.render();
-});
-router.on('route:favorites', function(){
-	//myShelfView.render();
-	//shelfView.render();
-	//myShelfView.showShelf();
-	//alert("shelf view");
 
-});
-router.on('route:myShelf', function(){
-	shelfView.render();
-	//shelfView.showShelf();
-});
+
 Backbone.history.start();
